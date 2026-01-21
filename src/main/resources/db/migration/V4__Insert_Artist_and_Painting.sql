@@ -1,10 +1,10 @@
--- ===== Artists =====
+--
 INSERT INTO artist (artist_id, stage_name, real_name, biography, birth_year, specialty_style, active_status)
 VALUES (1, 'Leonardo', 'Leonardo da Vinci', 'Italian Renaissance polymath', 1810, 'Renaissance', FALSE),
        (2, 'Claude', 'Claude Monet', 'Founder of French Impressionist painting', 1840, 'Impressionism', FALSE),
        (3, 'Pablo', 'Pablo Picasso', 'Spanish painter, sculptor, and co-founder of Cubism', 1881, 'Cubism', TRUE);
 
--- ===== Paintings for Claude (3 paintings) =====
+--
 INSERT INTO painting (painting_id, title, year_created, painting_type, dimension_width, dimension_height,
                       price_in_cents,
                       is_sold, date_added, artist_id)
@@ -12,7 +12,7 @@ VALUES (1, 'Water Lilies', 1906, 'OIL', 200.00, 180.00, 1000000, FALSE, '1906-01
        (2, 'Impression Sunrise', 1872, 'OIL', 100.00, 80.00, 500000, TRUE, '1872-01-01', 2),
        (3, 'Woman with a Parasol', 1875, 'OIL', 150.00, 130.00, 750000, FALSE, '1875-01-01', 2);
 
--- ===== Paintings for Pablo (5 paintings) =====
+--
 INSERT INTO painting (painting_id, title, year_created, painting_type, dimension_width, dimension_height,
                       price_in_cents,
                       is_sold, date_added, artist_id)
