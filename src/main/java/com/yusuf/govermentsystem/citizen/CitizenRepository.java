@@ -1,4 +1,4 @@
-package com.yusuf.citizen;
+package com.yusuf.govermentsystem.citizen;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 

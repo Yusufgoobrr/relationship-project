@@ -1,6 +1,6 @@
-package com.yusuf.citizen;
+package com.yusuf.govermentsystem.citizen;
 
-import com.yusuf.passport.Passport;
+import com.yusuf.govermentsystem.passport.Passport;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -8,7 +8,6 @@ import jakarta.validation.constraints.Size;
 import org.hibernate.annotations.NaturalId;
 
 import java.time.LocalDate;
-import java.util.Objects;
 
 @Entity
 public class Citizen {

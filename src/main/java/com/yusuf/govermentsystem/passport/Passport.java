@@ -1,13 +1,12 @@
-package com.yusuf.passport;
+package com.yusuf.govermentsystem.passport;
 
-import com.yusuf.citizen.Citizen;
+import com.yusuf.govermentsystem.citizen.Citizen;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
 import java.time.LocalDate;
-import java.util.Objects;
 
 @Entity
 public class Passport {

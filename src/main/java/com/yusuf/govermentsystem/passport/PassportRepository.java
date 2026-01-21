@@ -1,4 +1,4 @@
-package com.yusuf.passport;
+package com.yusuf.govermentsystem.passport;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
