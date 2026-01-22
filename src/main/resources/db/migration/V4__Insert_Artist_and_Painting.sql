@@ -21,3 +21,5 @@ VALUES (4, 'Les Demoiselles', 1907, 'OIL', 243.00, 233.00, 2000000, TRUE, '1907-
        (6, 'The Weeping Woman', 1937, 'OIL', 60.00, 49.00, 1200000, FALSE, '1937-01-01', 3),
        (7, 'Girl Before a Mirror', 1932, 'ACRYLIC', 162.00, 130.00, 1800000, FALSE, '1932-01-01', 3),
        (8, 'Blue Nude', 1902, 'WATERCOLOR', 92.00, 151.00, 900000, TRUE, '1902-01-01', 3);
+SELECT setval('artist_id_seq', (SELECT MAX(artist_id) FROM artist));
+SELECT setval('painting_id_seq', (SELECT MAX(painting_id) FROM painting));

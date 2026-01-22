@@ -8,7 +8,4 @@ import java.util.List;
 
 @Repository
 public interface ArtistRepository extends JpaRepository<Artist, Long> {
-
-    @Query("SELECT a FROM Artist a LEFT JOIN FETCH a.paintingList")
-    List<Artist> findAllWithPaintings();
 }

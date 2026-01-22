@@ -52,8 +52,6 @@ public class Passport {
     }
 
 
-
-
     public Long getPassportId() {
         return passportId;
     }

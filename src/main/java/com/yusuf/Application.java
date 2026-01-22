@@ -1,9 +1,17 @@
 package com.yusuf;
 
+import com.yusuf.enums.*;
+import com.yusuf.fitnessmanagement.member.Member;
+import com.yusuf.fitnessmanagement.member.MemberRepository;
+import com.yusuf.fitnessmanagement.fitnessclass.FitnessClass;
+import com.yusuf.fitnessmanagement.fitnessclass.FitnessClassRepository;
+import com.yusuf.fitnessmanagement.enrollment.Enrollment;
+import com.yusuf.fitnessmanagement.enrollment.EnrollmentId;
+import com.yusuf.fitnessmanagement.enrollment.EnrollmentRepository;
+
 import com.yusuf.gallerymanagement.artist.Artist;
 import com.yusuf.gallerymanagement.artist.ArtistRepository;
 import com.yusuf.gallerymanagement.painting.Painting;
-import com.yusuf.gallerymanagement.painting.PaintingType;
 import com.yusuf.govermentsystem.citizen.Citizen;
 import com.yusuf.govermentsystem.citizen.CitizenRepository;
 import com.yusuf.govermentsystem.passport.Passport;
@@ -15,6 +23,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 
 import java.math.BigDecimal;
+import java.sql.Time;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -25,13 +34,22 @@ public class Application {
     private final CitizenRepository citizenRepository;
     private final PassportRepository passportRepository;
     private final ArtistRepository artistRepository;
+    private final MemberRepository memberRepository;
+    private final FitnessClassRepository fitnessClassRepository;
+    private final EnrollmentRepository enrollmentRepository;
 
     public Application(CitizenRepository citizenRepository,
                        PassportRepository passportRepository,
-                       ArtistRepository artistRepository) {
+                       ArtistRepository artistRepository,
+                       MemberRepository memberRepository,
+                       FitnessClassRepository fitnessClassRepository,
+                       EnrollmentRepository enrollmentRepository) {
         this.citizenRepository = citizenRepository;
         this.passportRepository = passportRepository;
         this.artistRepository = artistRepository;
+        this.memberRepository = memberRepository;
+        this.fitnessClassRepository = fitnessClassRepository;
+        this.enrollmentRepository = enrollmentRepository;
     }
 
     public static void main(String[] args) {
@@ -43,9 +61,6 @@ public class Application {
     CommandLineRunner commandLineRunner() {
         return args -> {
 
-            // ==============================
-            // 0️⃣ Citizen & Passport Demo
-            // ==============================
             System.out.println("=== Citizen & Passport Demo ===");
 
             Citizen citizen1 = new Citizen(
@@ -73,19 +88,16 @@ public class Application {
             Citizen loadedCitizen = citizenRepository.findById(citizenId).orElseThrow();
             System.out.println("Citizen's passport: " + loadedCitizen.getPassport());
 
-            // Delete citizen and check cascading
             citizenRepository.deleteById(citizenId);
             System.out.println(citizenRepository.existsById(citizenId)
                     ? "Citizen not deleted ❌" : "Citizen deleted ✅");
             System.out.println(passportRepository.existsPassportByCitizen_CitizenId(citizenId)
                     ? "Passport not deleted ❌" : "Passport deleted ✅");
 
-            // ==============================
-            // 1️⃣ Artist & Painting Demo
-            // ==============================
             System.out.println("\n=== Artist & Painting Demo ===");
-
-            // --- Create artist with 3 paintings ---
+            enrollmentRepository.deleteAll();
+            memberRepository.deleteAll();
+            fitnessClassRepository.deleteAll();
             Artist artist = new Artist();
             artist.setStageName("Vincent");
             artist.setRealName("Vincent van Gogh");
@@ -128,9 +140,7 @@ public class Application {
             artist.getPaintingList().add(p3);
 
             artistRepository.save(artist);
-            System.out.println("Artist and 3 paintings saved.");
 
-            // --- Add a new painting ---
             Painting newPainting = new Painting();
             newPainting.setTitle("Irises");
             newPainting.setYearCreated(1889);
@@ -142,35 +152,110 @@ public class Application {
             newPainting.setArtist(artist);
             artist.getPaintingList().add(newPainting);
             artistRepository.save(artist);
-            System.out.println("New painting added to artist.");
 
-            // --- Remove a painting ---
             artist.getPaintingList().removeIf(p -> p.getTitle().equals("Café Terrace at Night"));
             artistRepository.save(artist);
-            System.out.println("Removed 'Café Terrace at Night'.");
 
-            // --- Lazy loading demo ---
-            Artist loadedArtist = artistRepository.findById(artist.getArtistId()).orElseThrow();
-            System.out.println("Artist: " + loadedArtist.getStageName());
-            loadedArtist.getPaintingList().forEach(p ->
-                    System.out.println(" - " + p.getTitle() + " | Sold: " + p.getSold())
-            );
+            System.out.println("\n=== Fitness Management Demo ===");
 
-            // --- N+1 problem demo ---
-            System.out.println("\n--- N+1 problem demo ---");
-            List<Artist> allArtists = artistRepository.findAll();
-            for (Artist a : allArtists) {
-                System.out.println("Artist: " + a.getStageName());
-                a.getPaintingList().forEach(p -> System.out.println("   Painting: " + p.getTitle()));
+            Member member = new Member();
+            member.setFullName("Yusuf Ali");
+            member.setEmail("yusuf.f75474itness@gmail.com");
+            member.setPhoneNumber("123456789");
+            member.setMembershipTier(MembershipTier.PREMIUM);
+            member.setEmergencyContactName("Dad");
+            member.setEmergencyContactPhone("999999999");
+            memberRepository.save(member);
+
+            FitnessClass class1 = new FitnessClass();
+            class1.setClassName("HIIT Training");
+            class1.setDescription("High intensity cardio");
+            class1.setInstructorName("John Trainer");
+            class1.setDayOfTheWeek(Days.MONDAY);
+            class1.setStartTime(Time.valueOf("10:00:00"));
+            class1.setDurationInMinutes(60);
+            class1.setMaxCapacity(2);
+            class1.setDifficultyLevel(DifficultyLevel.INTERMEDIATE);
+            class1.setRequiredMembershipTier(MembershipTier.BASIC);
+
+            FitnessClass class2 = new FitnessClass();
+            class2.setClassName("Advanced Strength");
+            class2.setDescription("Heavy strength program");
+            class2.setInstructorName("Sarah Coach");
+            class2.setDayOfTheWeek(Days.WEDNESDAY);
+            class2.setStartTime(Time.valueOf("18:00:00"));
+            class2.setDurationInMinutes(90);
+            class2.setMaxCapacity(1);
+            class2.setDifficultyLevel(DifficultyLevel.ADVANCED);
+            class2.setRequiredMembershipTier(MembershipTier.PREMIUM);
+
+            fitnessClassRepository.save(class1);
+            fitnessClassRepository.save(class2);
+
+            for (FitnessClass fc : List.of(class1, class2)) {
+                long enrolledCount = enrollmentRepository.countByFitnessClass_FitnessClassId(fc.getFitnessClassId());
+                if (enrolledCount < fc.getMaxCapacity()) {
+                    Enrollment enrollment = new Enrollment();
+                    enrollment.setMember(member);
+                    enrollment.setFitnessClass(fc);
+                    enrollment.setId(new EnrollmentId(member.getMemberId(), fc.getFitnessClassId()));
+                    enrollment.setAttendanceStatus(AttendanceStatus.ENROLLED);
+                    enrollmentRepository.save(enrollment);
+                    System.out.println("Enrolled in " + fc.getClassName());
+                } else {
+                    System.out.println(fc.getClassName() + " is full ❌");
+                }
             }
 
-            // --- Solved with JOIN FETCH ---
-            System.out.println("\n--- Solved with JOIN FETCH ---");
-            List<Artist> artistsWithPaintings = artistRepository.findAllWithPaintings();
-            for (Artist a : artistsWithPaintings) {
-                System.out.println("Artist: " + a.getStageName());
-                a.getPaintingList().forEach(p -> System.out.println("   Painting: " + p.getTitle()));
+            EnrollmentId eid = new EnrollmentId(member.getMemberId(), class1.getFitnessClassId());
+            Enrollment e = enrollmentRepository.findById(eid).orElseThrow();
+            e.setAttendanceStatus(AttendanceStatus.ATTENDED);
+            enrollmentRepository.save(e);
+            System.out.println("\nUpdated " + class1.getClassName() + " status to ATTENDED");
+
+            System.out.println("\nEnrollments for " + member.getFullName() + ":");
+            enrollmentRepository.findAllWithMemberAndClass().stream()
+                    .filter(en -> en.getMember().getMemberId().equals(member.getMemberId()))
+                    .forEach(en -> System.out.println(
+                            "Class=" + en.getFitnessClass().getClassName() +
+                                    ", Status=" + en.getAttendanceStatus()
+                    ));
+
+            System.out.println("\nMembers in " + class1.getClassName() + ":");
+            enrollmentRepository.findAllWithMemberAndClass().stream()
+                    .filter(en -> en.getFitnessClass().getFitnessClassId().equals(class1.getFitnessClassId()))
+                    .forEach(en -> System.out.println(
+                            "Member=" + en.getMember().getFullName() +
+                                    ", Email=" + en.getMember().getEmail()
+                    ));
+
+            Enrollment compositeCheck = enrollmentRepository.findByIdWithMemberAndClass(eid).orElseThrow();
+            System.out.println("\nComposite Key Check: Enrollment fetched -> " +
+                    "Member=" + compositeCheck.getMember().getFullName() +
+                    ", Class=" + compositeCheck.getFitnessClass().getClassName());
+
+            Member member2 = new Member();
+            member2.setFullName("Ali Veli");
+            member2.setEmail("ali.veli@gmail.com");
+            member2.setMembershipTier(MembershipTier.PREMIUM);
+            member2.setEmergencyContactName("John Doe");
+            member2.setEmergencyContactPhone("555-0199");
+            memberRepository.save(member2);
+
+            long enrolledCountClass2 = enrollmentRepository.countByFitnessClass_FitnessClassId(class2.getFitnessClassId());
+            if (enrolledCountClass2 < class2.getMaxCapacity()) {
+                Enrollment newEnrollment = new Enrollment();
+                newEnrollment.setMember(member2);
+                newEnrollment.setFitnessClass(class2);
+                newEnrollment.setId(new EnrollmentId(member2.getMemberId(), class2.getFitnessClassId()));
+                newEnrollment.setAttendanceStatus(AttendanceStatus.ENROLLED);
+                enrollmentRepository.save(newEnrollment);
+                System.out.println("Enrolled " + member2.getFullName() + " in " + class2.getClassName());
+            } else {
+                System.out.println(class2.getClassName() + " is full ❌");
             }
+
+            System.out.println("\n=== Fitness Management Demo Complete ===");
         };
     }
 }

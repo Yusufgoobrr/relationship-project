@@ -1,4 +1,6 @@
 package com.yusuf.gallerymanagement.painting;
 
-public interface PaintingRepository {
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface PaintingRepository extends JpaRepository<Painting,Long> {
 }

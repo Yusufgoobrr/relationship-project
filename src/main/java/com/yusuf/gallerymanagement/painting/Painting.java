@@ -1,5 +1,6 @@
 package com.yusuf.gallerymanagement.painting;
 
+import com.yusuf.enums.PaintingType;
 import com.yusuf.gallerymanagement.artist.Artist;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.DecimalMin;
@@ -26,8 +27,6 @@ public class Painting {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private PaintingType paintingType;
-
-    // has to be added a constraint on db level
     @Column(nullable = false, precision = 6, scale = 2)
     @DecimalMin(value = "0.0")
     private BigDecimal dimensionWidth;
@@ -42,8 +41,6 @@ public class Painting {
 
     @Column(nullable = false)
     private Boolean isSold = false;
-
-    // have to have constraint and prepresists
     @Column(nullable = false, updatable = false)
     private LocalDate dateAdded;
 
